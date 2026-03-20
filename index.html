@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matis</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+
+
+:root {
+  --bg: #f5f5f0; --nav-bg: #1a1a1a; --nav-hover: #2e2e2e;
+  --text: #333; --text-light: #888; --card-bg: white;
+  --border: #ddd; --input-bg: #fafafa;
+  --footer-bg: #1a1a1a; --footer-text: #aaa;
+}
+
+[data-theme="dark"] {
+  --bg: #121212; --nav-bg: #0a0a0a; --nav-hover: #2a2a2a;
+  --text: #e0e0e0; --text-light: #aaa; --card-bg: #1e1e1e;
+  --border: #333; --input-bg: #2a2a2a;
+  --footer-bg: #0a0a0a; --footer-text: #666;
+}
+
+body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+#progress-bar { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: linear-gradient(90deg, #e74c3c, #f39c12); z-index: 9999; transition: width 0.1s linear; }
+
+.loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; display: flex; align-items: center; justify-content: center; z-index: 9998; animation: fadeOutLoader 0.5s ease 1.2s forwards; }
+.loader-text { color: white; font-size: 28px; font-weight: 600; animation: pulseText 1s ease infinite; }
+@keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes fadeOutLoader { to { opacity: 0; pointer-events: none; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+nav { background: var(--nav-bg); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 60px; box-shadow: 0 2px 12px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100; }
+.logo { color: white; font-weight: 600; font-size: 18px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+.planet-wrap { position: relative; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+.planet-ball { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffffff, #aaa 50%, #333 100%); box-shadow: inset -4px -2px 6px rgba(0,0,0,0.5), 0 0 6px rgba(255,255,255,0.1); position: relative; z-index: 2; }
+.planet-ring { position: absolute; width: 40px; height: 12px; border: 2.5px solid rgba(255,255,255,0.7); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%) rotateX(65deg); z-index: 3; animation: ringRotate 4s linear infinite; }
+@keyframes ringRotate { from { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(0deg); } to { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(360deg); } }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.nav-links { display: flex; gap: 4px; list-style: none; }
+.nav-links a { color: #aaa; text-decoration: none; font-size: 14px; font-weight: 500; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+.nav-links a:hover { background: var(--nav-hover); color: white; }
+.nav-links a.active { background: var(--nav-hover); color: white; }
+.nav-cta { background: white; color: #1a1a1a !important; font-weight: 600 !important; }
+.nav-cta:hover { background: #e8e8e8 !important; color: #1a1a1a !important; }
+.theme-toggle { background: #2e2e2e; border: none; color: white; width: 36px; height: 36px; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.theme-toggle:hover { background: #444; }
+
+.page { display: none; flex: 1; }
+.page.active { display: block; }
+
+.content { max-width: 700px; margin: 80px auto; text-align: center; color: var(--text); }
+.content h1 { font-size: 32px; font-weight: 600; margin-bottom: 12px; animation: fadeInUp 0.5s ease; }
+.content p { color: var(--text-light); font-size: 16px; animation: fadeInUp 0.5s ease 0.1s both; }
+
+.services-title { text-align: center; padding-top: 60px; animation: fadeInUp 0.4s ease; }
+.services-title h1 { font-size: 32px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.services-title p { color: var(--text-light); font-size: 16px; }
+
+.services-grid { max-width: 900px; margin: 40px auto 60px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+.service-card { background: var(--card-bg); border-radius: 12px; padding: 32px 24px; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.06); border: 1px solid var(--border); animation: fadeInUp 0.4s ease both; }
+.service-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); transition: transform 0.2s, box-shadow 0.2s; }
+.service-card .icon { font-size: 36px; margin-bottom: 16px; }
+.service-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.service-card p { font-size: 13px; color: var(--text-light); line-height: 1.6; }
+.service-card:nth-child(1) { animation-delay: 0.0s; }
+.service-card:nth-child(2) { animation-delay: 0.1s; }
+.service-card:nth-child(3) { animation-delay: 0.2s; }
+.service-card:nth-child(4) { animation-delay: 0.3s; }
+.service-card:nth-child(5) { animation-delay: 0.4s; }
+.service-card:nth-child(6) { animation-delay: 0.5s; }
+
+.rejoindre-wrapper { max-width: 900px; margin: 60px auto; padding: 0 20px; animation: fadeInUp 0.4s ease; }
+.rejoindre-wrapper h1 { font-size: 32px; font-weight: 600; margin-bottom: 8px; color: var(--text); text-align: center; }
+.rejoindre-wrapper > p { color: var(--text-light); font-size: 16px; text-align: center; margin-bottom: 40px; }
+.rejoindre-content { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+.rejoindre-info { background: var(--card-bg); border-radius: 12px; padding: 32px; border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.rejoindre-info h2 { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: var(--text); }
+.info-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+.info-item .info-icon { font-size: 20px; margin-top: 2px; }
+.info-item div strong { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.info-item div span { font-size: 13px; color: var(--text-light); }
+.map-container { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.06); min-height: 320px; }
+.map-container iframe { width: 100%; height: 320px; border: none; display: block; }
+
+.contact-wrapper { max-width: 500px; margin: 60px auto; background: var(--card-bg); border-radius: 12px; padding: 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); animation: fadeInUp 0.4s ease; }
+.contact-wrapper h2 { font-size: 24px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.contact-wrapper > p { color: var(--text-light); font-size: 14px; margin-bottom: 28px; }
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-light); margin-bottom: 6px; }
+.form-group input, .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; background: var(--input-bg); color: var(--text); outline: none; }
+.form-group input:focus, .form-group textarea:focus { border-color: var(--text); }
+.form-group textarea { height: 120px; resize: vertical; }
+.btn-submit { width: 100%; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; }
+.btn-submit:hover { background: #333; }
+.success-msg { display: none; text-align: center; padding: 16px; background: #e8f5e9; border-radius: 8px; color: #2e7d32; font-weight: 500; margin-top: 16px; }
+
+footer { background: var(--footer-bg); color: var(--footer-text); text-align: center; padding: 24px 40px; font-size: 13px; margin-top: auto; }
+footer span { color: #e74c3c; }
+
+.back-to-top { position: fixed; bottom: 30px; right: 30px; background: #1a1a1a; color: white; border: none; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.back-to-top.visible { opacity: 1; pointer-events: all; }
+.back-to-top:hover { background: #333; }
+
+
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+  <div class="loader"><span class="loader-text">Matis</span></div>
+
+  <nav>
+    <span class="logo" onclick="afficherPage('accueil')">
+        <div class="planet-wrap">
+          <div class="planet-ball"></div>
+          <div class="planet-ring"></div>
+        </div>
+        Saturne
+      </span>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="javascript:void(0)" id="link-accueil" class="active" onclick="afficherPage('accueil')">Accueil</a></li>
+        <li><a href="javascript:void(0)" id="link-apropos" onclick="afficherPage('apropos')">A propos</a></li>
+        <li><a href="javascript:void(0)" id="link-services" onclick="afficherPage('services')">Services</a></li>
+        <li><a href="javascript:void(0)" id="link-blog" onclick="afficherPage('blog')">Blog</a></li>
+        <li><a href="javascript:void(0)" id="link-rejoindre" onclick="afficherPage('rejoindre')">Nous rejoindre</a></li>
+        <li><a href="javascript:void(0)" id="link-contact" class="nav-cta" onclick="afficherPage('contact')">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    </div>
+  </nav>
+
+  <!-- ACCUEIL -->
+
+  <div id="page-accueil" class="page active">
+    <div class="content">
+      <h1>Bienvenue 👋</h1>
+      <p>Le contenu de ta page s'affiche ici.</p>
+    </div>
+  </div>
+
+  <!-- SERVICES (sans carte) -->
+
+  <div id="page-services" class="page">
+    <div class="services-title">
+      <h1>Mes Services</h1>
+      <p>Voici ce que je propose</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card"><div class="icon">🎨</div><h3>Design</h3><p>Creation d'interfaces modernes et intuitives pour vos projets.</p></div>
+      <div class="service-card"><div class="icon">💻</div><h3>Developpement Web</h3><p>Sites web rapides, responsive et bien codes de A a Z.</p></div>
+      <div class="service-card"><div class="icon">📱</div><h3>Application Mobile</h3><p>Applications iOS et Android performantes et ergonomiques.</p></div>
+      <div class="service-card"><div class="icon">🔍</div><h3>SEO</h3><p>Optimisation pour les moteurs de recherche et visibilite en ligne.</p></div>
+      <div class="service-card"><div class="icon">📊</div><h3>Analyse</h3><p>Suivi des performances et reporting detaille de vos projets.</p></div>
+      <div class="service-card"><div class="icon">🛠️</div><h3>Maintenance</h3><p>Support technique et maintenance reguliere de vos applications.</p></div>
+    </div>
+  </div>
+
+  <!-- NOUS REJOINDRE -->
+
+  <div id="page-rejoindre" class="page">
+    <div class="rejoindre-wrapper">
+      <h1>Nous rejoindre 📍</h1>
+      <p>Retrouvez-nous a Blois, au coeur de la Loire</p>
+      <div class="rejoindre-content">
+        <div class="rejoindre-info">
+          <h2>Informations pratiques</h2>
+          <div class="info-item"><span class="info-icon">📍</span><div><strong>Adresse</strong><span>Blois, 41000 — Loir-et-Cher, France</span></div></div>
+          <div class="info-item"><span class="info-icon">🕘</span><div><strong>Horaires</strong><span>Lundi — Vendredi : 9h00 — 18h00</span></div></div>
+          <div class="info-item"><span class="info-icon">🚗</span><div><strong>Acces</strong><span>Parking disponible a proximite</span></div></div>
+          <div class="info-item"><span class="info-icon">🚆</span><div><strong>En train</strong><span>Gare de Blois-Chambord — 10 min a pied</span></div></div>
+          <div class="info-item"><span class="info-icon">📞</span><div><strong>Telephone</strong><span>+33 2 00 00 00 00</span></div></div>
+        </div>
+        <div class="map-container">
+          <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=1.2900%2C47.5700%2C1.3800%2C47.6100&layer=mapnik&marker=47.5861%2C1.3359" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+
+  <div id="page-contact" class="page">
+    <div class="contact-wrapper">
+      <h2>Contacte-moi</h2>
+      <p>Remplis le formulaire et je te repondrai rapidement.</p>
+      <div class="form-group"><label>Nom</label><input type="text" placeholder="Ton nom"></div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="ton@email.com"></div>
+      <div class="form-group"><label>Message</label><textarea placeholder="Ton message..."></textarea></div>
+      <button class="btn-submit" onclick="envoyerFormulaire()">Envoyer</button>
+      <div class="success-msg" id="success">Message envoye avec succes !</div>
+    </div>
+  </div>
+
+  <!-- A PROPOS -->
+
+  <div id="page-apropos" class="page">
+    <div class="content"><h1>A propos</h1><p>Cette page est en construction.</p></div>
+  </div>
+
+  <!-- BLOG -->
+
+  <div id="page-blog" class="page">
+    <div class="content"><h1>Blog</h1><p>Cette page est en construction.</p></div>
+  </div>
+
+  <footer><p>By <span></span>Matis — 2026</p></footer>
+  <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <script>
+    function afficherPage(nom) {
+      document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+      document.querySelectorAll('.nav-links a').forEach(function(a) { a.classList.remove('active'); });
+      document.querySelector('#page-' + nom).classList.add('active');
+      document.querySelector('#link-' + nom).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function envoyerFormulaire() {
+      document.querySelector('#success').style.display = 'block';
+    }
+
+    function toggleTheme() {
+      var html = document.documentElement;
+      var btn = document.querySelector('#themeBtn');
+      if (html.getAttribute('data-theme') === 'light') {
+        html.setAttribute('data-theme', 'dark');
+        btn.textContent = '☀️';
+      } else {
+        html.setAttribute('data-theme', 'light');
+        btn.textContent = '🌙';
+      }
+    }
+
+    window.addEventListener('scroll', function() {
+      var btn = document.querySelector('#backToTop');
+      if (window.scrollY > 200) { btn.classList.add('visible'); } else { btn.classList.remove('visible'); }
+      var progress = document.body.scrollHeight - window.innerHeight > 0 ? (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100 : 0;
+      document.querySelector('#progress-bar').style.width = progress + '%';
+    });
+  </script>
+
+</body>
+</html>
